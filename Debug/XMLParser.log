@@ -1,0 +1,4 @@
+﻿  main.cpp
+C:\Users\Tim Roberts\Documents\XMLParser\Utility.h(225,13): warning C4244:  'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\Tim Roberts\Documents\XMLParser\main.cpp(12,20): warning C4018:  '<': signed/unsigned mismatch
+  XMLParser.vcxproj -> C:\Users\Tim Roberts\Documents\XMLParser\Debug\XMLParser.exe

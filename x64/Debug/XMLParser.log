@@ -1,0 +1,16 @@
+﻿  main.cpp
+C:\Users\Tim Roberts\Documents\XMLParser\Utility.h(225,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\Tim Roberts\Documents\XMLParser\main.cpp(15,10): warning C4477: 'printf' : format string '%u' requires an argument of type 'unsigned int', but variadic argument 3 has type 'unsigned __int64'
+  Utility.cpp
+C:\Users\Tim Roberts\Documents\XMLParser\main.cpp(15,10): message : consider using '%zu' in the format string
+C:\Users\Tim Roberts\Documents\XMLParser\Utility.h(225,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\Tim Roberts\Documents\XMLParser\Utility.cpp(247,32): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Tim Roberts\Documents\XMLParser\Utility.cpp(252,37): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Tim Roberts\Documents\XMLParser\Utility.cpp(257,39): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Tim Roberts\Documents\XMLParser\Utility.cpp(262,40): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Tim Roberts\Documents\XMLParser\Utility.cpp(613,48): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+  XMLParser.cpp
+C:\Users\Tim Roberts\Documents\XMLParser\Utility.cpp(652,33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
+C:\Users\Tim Roberts\Documents\XMLParser\Utility.h(225,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  XMLParser.vcxproj -> C:\Users\Tim Roberts\Documents\XMLParser\x64\Debug\XMLParser.exe
