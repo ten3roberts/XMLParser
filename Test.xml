@@ -4,7 +4,7 @@
 	<heading>Reminder</heading>
 	<body>
 	Don't forget me this weekend!
-	<style>bold</style>
+	<style on="Body"><b>arial</b></style>
 	</body>
 	This is just root content
 </note>
