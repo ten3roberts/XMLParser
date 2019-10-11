@@ -1,18 +1,43 @@
 #include "XMLParser.h"
-#include <vector>
-#include "Utility.h"
+#include <src/pch.h>
 
 using namespace Utility;
 
-XMLNode::XMLNode(std::string filename) : m_tag(""), m_content(""), m_children(), m_depth(0), parent(nullptr)
+XMLNode::XMLNode(const std::string& filename) : m_tag(""), m_content(""), m_children(), m_depth(0), m_parent(nullptr), m_valid(true)
 {
 	m_filepath = FindFile(filename);
 	std::ifstream file(m_filepath);
 	std::string tmp, file_cont = "";
+	if (!file.is_open())
+	{
+		m_valid = false; return;
+	}
 	while (std::getline(file, tmp)) { file_cont += tmp; }
+	if (!file_cont.size()) { m_valid = false; return; }
 	Load(file_cont);
 }
 
+
+/*XMLNode::XMLNode(const XMLNode& node)
+{
+	m_attributes = node.m_attributes;
+	m_children = node.m_children;
+	m_parent = node.m_parent;
+	m_depth = node.m_depth;
+	m_tag = node.m_tag;
+}*/
+
+XMLNode::~XMLNode()
+{
+	for (int i = 0; i < m_children.size(); i++)
+	{
+		std::vector<XMLNode*>& children = *getChildren(i);
+		for (int j = 0; j < children.size(); j++)
+		{
+			delete children[j];
+		}
+	}
+}
 
 std::string XMLNode::Load(std::string str)
 {
@@ -41,7 +66,6 @@ std::string XMLNode::Load(std::string str)
 	if (tag_open == std::string::npos)
 		return str;
 
-	//str = str.substr(0, str.find('>'));
 	//Finds the end of the opening tag
 	size_t tag_end = str.find('>');
 
@@ -52,8 +76,7 @@ std::string XMLNode::Load(std::string str)
 	m_tag = tag_parts[0];
 	if (!m_tag.size())
 		return "";
-	if (m_tag.back() == '/') //Node is empty
-		return org.substr(0, tag_open) + str.substr(tag_open + m_tag.size() - 3);
+
 
 	if (tag_parts.size() > 1)
 	{
@@ -68,6 +91,11 @@ std::string XMLNode::Load(std::string str)
 	}
 
 	//Indicates the beginning of the closing tag
+	if (str[tag_end - 1] == '/') //Node is empty
+	{
+		m_content = "";
+		return org.substr(0, tag_open) + str.substr(tag_end+1);
+	}
 	size_t close_tag = str.find("</" + m_tag + ">");
 	if (close_tag == std::string::npos)
 		return "";
@@ -79,8 +107,8 @@ std::string XMLNode::Load(std::string str)
 	//Breaks the loop when there are no more childs in the body
 	while (body.size())
 	{
-		XMLNode child(this, m_depth + 1);
-		std::string tmp(child.Load(body));
+		XMLNode* child = new XMLNode(this, m_depth + 1, m_valid);
+		std::string tmp(child->Load(body));
 		if (tmp == body)
 		{
 			break;
@@ -89,9 +117,9 @@ std::string XMLNode::Load(std::string str)
 
 
 		//Checks if the child was valid
-		if (!child.getTag().size())
+		if (!child->getTag().size())
 			continue;
-		m_children[child.getTag()].push_back(child);
+		m_children[child->getTag()].push_back(child);
 	}
 	m_content = body;
 
@@ -104,7 +132,7 @@ std::string XMLNode::GenerateString()
 	tabs.insert(tabs.begin(), m_depth, '\t');
 	std::string attributes;
 	auto it = m_attributes.begin();
-	for (auto it = m_attributes.begin(); it!=m_attributes.end(); it++)
+	for (auto it = m_attributes.begin(); it != m_attributes.end(); it++)
 	{
 		attributes += ' ' + it->first + "=\"" + it->second + '"';
 	}
@@ -118,13 +146,13 @@ std::string XMLNode::GenerateString()
 	for (int i = 0; i < m_children.size(); i++)
 	{
 
-		std::vector<XMLNode>& children = getChildren(i);
+		std::vector<XMLNode*>& children = *getChildren(i);
 		for (int j = 0; j < children.size(); j++)
 		{
 			if (i > 0 || j > 0)
 				body += '\n';
-			const std::string& tmp = children[j].GenerateString();
-			body += (tmp.find('\n') != std::string::npos || m_children.size() > 1 || m_content.size() ? tabs + '\t' : "")+ tmp;
+			const std::string& tmp = children[j]->GenerateString();
+			body += (tmp.find('\n') != std::string::npos || m_children.size() > 1 || m_content.size() ? tabs + '\t' : "") + tmp;
 		}
 	}
 
@@ -143,5 +171,26 @@ void XMLNode::Save(std::string filepath)
 void XMLNode::Save()
 {
 	GenerateFile(m_filepath, GenerateString(), false);
+}
+
+XMLNode* XMLNode::Find(const std::string& tag)
+{
+	if (m_tag == tag)
+		return this;
+
+	//Generating all the childs string
+	XMLNode* result = nullptr;
+	for (int i = 0; i < m_children.size(); i++)
+	{
+
+		std::vector<XMLNode*>& children = *getChildren(i);
+		for (int j = 0; j < children.size(); j++)
+		{
+			result = children[j]->Find(tag);
+			if (result != nullptr)
+				return result;
+		}
+	}
+	return nullptr;
 }
 
