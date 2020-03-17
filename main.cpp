@@ -1,11 +1,10 @@
-#include "Utility.h"
 #include "XMLParser.h"
+#include "Utility.h"
 
 int main()
 {
-	std::ifstream file("./Test.xml", std::ios::binary);
-	std::string text = Utility::ReadFile("Test.xml");
-	//std::string text = Utility::ReadFile("Example.dae");
+	//std::string text = ReadFile("Test.xml");
+	std::string text = ReadFile("Example.dae");
 
 	XMLNode node;
 	node.Load(text);

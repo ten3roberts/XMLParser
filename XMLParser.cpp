@@ -1,11 +1,10 @@
 #include "XMLParser.h"
-#include <src/pch.h>
-
-using namespace Utility;
+#include <fstream>
+#include "Utility.h"
 
 XMLNode::XMLNode(const std::string& filename) : m_tag(""), m_content(""), m_children(), m_depth(0), m_parent(nullptr), m_valid(true)
 {
-	m_filepath = FindFile(filename);
+	m_filepath = filename;
 	std::ifstream file(m_filepath);
 	std::string tmp, file_cont = "";
 	if (!file.is_open())
@@ -165,12 +164,14 @@ std::string XMLNode::GenerateString()
 
 void XMLNode::Save(std::string filepath)
 {
-	GenerateFile(filepath, GenerateString(), false);
+	std::ofstream file(filepath);
+	file.close();
 }
 
 void XMLNode::Save()
 {
-	GenerateFile(m_filepath, GenerateString(), false);
+	std::ofstream file(m_filepath);
+	file.close();
 }
 
 XMLNode* XMLNode::Find(const std::string& tag)
